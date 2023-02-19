@@ -29,29 +29,15 @@ const TodoItem = mongoose.model("todoItem", itemSchema);
 
 
 //routing
-app.get("/", function (req, res) {
-    const day = date();
-    const query = TodoItem.find({type: "todo"});
+app.get("/:listName", function(req, res) {
+    const customList = req.params.listName;
+    const query = TodoItem.find({type: customList});
     query.exec(function(err, items) {
         if (err) {
             console.log("query error");
         } else {
             res.render("list", {
-                listTitle: day,
-                items: items
-            });
-        }
-    })
-})
-
-app.get("/work", function (req, res) {
-    const query = TodoItem.find({type: "work"});
-    query.exec(function(err, items) {
-        if (err) {
-            console.log("query error");
-        } else {
-            res.render("list", {
-                listTitle: "Work",
+                listTitle: customList,
                 items: items
             });
         }
@@ -63,29 +49,24 @@ app.get("/about", function(req, res) {
 })
 
 //posts responses
-app.post("/", function (req, res) {
-    const listType = req.body.list === "work" ? "work" : "todo";
+app.post("/:listName", function (req, res) {
+    const listType = req.params.listName;
     const item = new TodoItem({
         name: req.body.newTodoItem,
         type: listType
     });
     item.save();
-    if (listType === "work") {
-        console.log("listType");
-        res.redirect("/work");
-    } else {
-        res.redirect("/");
-    }
+    res.redirect("/" + req.params.listName);
 })
 
-app.post("/delete", function(req, res) {
+app.post("/delete/:listName", function(req, res) {
     const itemId = req.body.checkbox;
     TodoItem.findByIdAndDelete(itemId, function(err, docs) {
         if (err) {
             console.log(err);
         }
     });
-    res.redirect("/");
+    res.redirect("/" + req.params.listName);
 })
 
 //server
