@@ -7,19 +7,21 @@
 </div>
 
 <div class="box">
-    <% for (let i=0; i < items.length; i++) {%>
-        <div class="item">
-            <input type="checkbox">
-            <p>
-                <%= items[i].name %>
-            </p>
-        </div>
+    <form action="/delete" method="post">
+        <% for (let i=0; i < items.length; i++) {%>
+            <div class="item">
+                <input type="checkbox" onchange="this.form.submit()" name="checkbox" value="<%=items[i]._id%>">
+                <p>
+                    <%= items[i].name %>
+                </p>
+            </div>
         <% } %>
+    </form>
 
-            <form class="item" action="/" method="post">
-                <input type="text" name="newTodoItem" placeholder="New Item" autocomplete="off">
-                <button type="submit" name="list" value="<%= listTitle %>">+</button>
-            </form>
+    <form class="item" action="/" method="post">
+        <input type="text" name="newTodoItem" placeholder="New Item" autocomplete="off">
+        <button type="submit" name="list" value="<%= listTitle %>">+</button>
+    </form>
 </div>
 
 <%- include("footer") -%>
